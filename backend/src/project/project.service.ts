@@ -1,5 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ProjectDetails } from './dto/project.dto';
+import {
+  ProjectDetails,
+  DocumentType,
+  PhotoType,
+  VideoType,
+} from './dto/project.dto';
 
 @Injectable()
 export class ProjectService {
@@ -19,6 +24,54 @@ export class ProjectService {
           name: 'matterport',
           url: 'https://my.matterport.com/show/?m=YdG9cgxNPGC',
         },
+      ],
+      documents: [
+        {
+          id: 'doc1',
+          name: 'Building Plan.pdf',
+          type: DocumentType.PDF,
+          url: '/mock-docs/doc1.pdf',
+        },
+        {
+          id: 'doc2',
+          name: 'Survey.jpg',
+          type: DocumentType.DOCX,
+          url: '/mock-docs/doc2.docx',
+        },
+        {
+          id: 'doc3',
+          name: 'Contract.doc',
+          type: DocumentType.DOC,
+          url: '/mock-docs/doc3.doc',
+        },
+      ],
+      photos: [
+        {
+          id: 'photo1',
+          name: 'Exterior Shot 1.jpg',
+          url: '/mock-photos/photo1.jpg',
+          type: PhotoType.JPG,
+        },
+        {
+          id: 'photo2',
+          name: 'Interior Shot 1.png',
+          url: '/mock-photos/photo2.png',
+          type: PhotoType.PNG,
+        },
+      ],
+      videos: [
+        {
+          id: 'video1',
+          name: 'Walkthrough.mp4',
+          url: '/mock-videos/video1.mp4',
+          type: VideoType.MP4,
+        },
+      ],
+      customFields: [
+        { key: 'Internal', value: 'TYPE 4' },
+        { key: 'External', value: 'Commercial' },
+        { key: 'Cat', value: 'No' },
+        { key: 'Post', value: 'No' },
       ],
     },
   ];

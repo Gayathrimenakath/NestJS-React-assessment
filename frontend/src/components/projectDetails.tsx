@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
-import type { Link, ProjectDetails } from "../interfaces/project";
 import {
   Box,
   Container,
   Grid,
-  Link as MuiLink,
   List,
   ListItem,
   ListItemText,
+  Link as MuiLink,
   Paper,
   Typography,
 } from "@mui/material";
+import { useEffect, useState } from "react";
+import type { Link, ProjectDetails } from "../interfaces/project";
+import { Media } from "./media";
 
 export const ProjectDetailsPage = () => {
   const [projectDetails, setProjectDetails] = useState<ProjectDetails | null>(
@@ -44,7 +45,7 @@ export const ProjectDetailsPage = () => {
   ) : loading ? (
     <Box>Loading details</Box>
   ) : projectDetails ? (
-    <Container sx={{ mt: 0, mb: 1,  width: "100%" }}  disableGutters >
+    <Container sx={{ mt: 0, mb: 1, width: "100%" }} disableGutters>
       <Paper elevation={3} sx={{ p: 3 }}>
         <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
           <Grid
@@ -76,14 +77,16 @@ export const ProjectDetailsPage = () => {
         </Box>
 
         <Box sx={{ mt: 2 }}>
-          <Typography variant="h5" gutterBottom>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }} gutterBottom>
             Description
           </Typography>
           <Typography variant="body1">{projectDetails.description}</Typography>
         </Box>
 
         <Box sx={{ mt: 4 }}>
-          <Typography variant="h5">Links</Typography>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            Links
+          </Typography>
           {projectDetails.links && projectDetails.links.length > 0 ? (
             <List dense sx={{ paddingTop: "1px" }}>
               {projectDetails.links.map((link: Link, index: number) => (
@@ -101,6 +104,92 @@ export const ProjectDetailsPage = () => {
             </List>
           ) : (
             <Typography variant="body2">No links available.</Typography>
+          )}
+        </Box>
+
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            Documents
+          </Typography>
+          <Grid container flexDirection="row" spacing={2}>
+            {projectDetails.documents.map((doc) => (
+              <Grid key={doc.id}>
+                <Media mediaProp={doc} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            Photos
+          </Typography>
+          {projectDetails.photos && projectDetails.photos.length > 0 ? (
+            <Grid container flexDirection="row" spacing={2}>
+              {projectDetails.photos.map((photo) => (
+                <Grid key={photo.id}>
+                  <Media mediaProp={photo} />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Typography variant="body2">No videos available.</Typography>
+          )}
+        </Box>
+
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            Videos
+          </Typography>
+          {projectDetails.videos && projectDetails.videos.length > 0 ? (
+            <Grid container flexDirection="row" spacing={2}>
+              {projectDetails.videos.map((video) => (
+                <Grid key={video.id}>
+                  <Media mediaProp={video} />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Typography variant="body2">No videos available.</Typography>
+          )}
+        </Box>
+
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            Custom Fields
+          </Typography>
+
+          {projectDetails.customFields &&
+          projectDetails.customFields.length > 0 ? (
+            <Box
+              display={"flex"}
+              width={"50%"}
+              flexDirection={"column"}
+              pb={"5px"}
+              pt={"5px"}
+            >
+              {projectDetails.customFields.map((field, index) => (
+                <Box
+                  key={index}
+                  width={"100%"}
+                  display={"flex"}
+                  flexDirection={"row"}
+                >
+                  <Box width={"50%"}>
+                    <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                      {field.key}
+                    </Typography>
+                  </Box>
+                  <Box width={"50%"}>
+                    <Typography variant="subtitle1" >
+                      {field.value}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <p>No custom fields available.</p>
           )}
         </Box>
       </Paper>
