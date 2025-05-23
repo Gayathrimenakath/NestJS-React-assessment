@@ -1,6 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { CreateLinkDto } from './dto/create-link.dto';
+import { Link, ProjectDetails } from './dto/project.dto';
 import { ProjectService } from './project.service';
-import { ProjectDetails } from './dto/project.dto';
 
 @Controller('projects')
 export class ProjectController {
@@ -9,5 +10,13 @@ export class ProjectController {
   @Get(':id')
   getProjectDetails(@Param('id') id: string): ProjectDetails {
     return this.projectService.getProjectDetails(id);
+  }
+
+  @Post(':id/newLink')
+  addNewLink(
+    @Param('id') id: string,
+    @Body() createLinkDto: CreateLinkDto,
+  ): Link {
+    return this.projectService.addNewLink(id, createLinkDto);
   }
 }

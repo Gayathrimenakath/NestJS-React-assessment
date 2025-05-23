@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateLinkDto } from './dto/create-link.dto';
 import {
-  ProjectDetails,
   DocumentType,
+  Link,
   PhotoType,
+  ProjectDetails,
   VideoType,
 } from './dto/project.dto';
 
@@ -82,5 +84,16 @@ export class ProjectService {
       throw new NotFoundException(`Project with ID ${id} not found`);
     }
     return project;
+  }
+
+  addNewLink(projectID: string, createLinkDto: CreateLinkDto): Link {
+    const project = this.mockProjects.find((p) => p.id === projectID);
+
+    const newLink: Link = {
+      name: createLinkDto.name,
+      url: createLinkDto.url,
+    };
+    project?.links.push(newLink);
+    return newLink;
   }
 }

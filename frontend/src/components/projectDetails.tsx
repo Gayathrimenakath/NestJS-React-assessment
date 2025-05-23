@@ -1,5 +1,7 @@
+import { Add } from "@mui/icons-material";
 import {
   Box,
+  Button,
   Container,
   Grid,
   List,
@@ -12,6 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import type { Link, ProjectDetails } from "../interfaces/project";
 import { Media } from "./media";
+import { ModalWrapper } from "./ModalWrapper";
 
 export const ProjectDetailsPage = () => {
   const [projectDetails, setProjectDetails] = useState<ProjectDetails | null>(
@@ -19,6 +22,10 @@ export const ProjectDetailsPage = () => {
   );
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [newName, setNewName] = useState<string>("");
+  const [newURL, setNewURL] = useState<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
     fetchProjectDetails();
@@ -40,12 +47,56 @@ export const ProjectDetailsPage = () => {
     }
   };
 
+  const addNewLink = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/projects/${projectDetails?.id}/newLink`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: newName, url: newURL }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || `HTTP error! status: ${response.status}`
+        );
+      }
+      const newLink = await response.json();
+      setProjectDetails((prevProject) => {
+        if (!prevProject) return null;
+        return {
+          ...prevProject,
+          links: [...prevProject.links, newLink],
+        };
+      });
+      setIsOpen(false);
+    } catch (error) {
+      setIsOpen(false);
+    }
+  };
+
   return error ? (
     <Box>Error Found: {error}</Box>
   ) : loading ? (
     <Box>Loading details</Box>
   ) : projectDetails ? (
     <Container sx={{ mt: 0, mb: 1, width: "100%" }} disableGutters>
+      {isOpen && (
+        <ModalWrapper
+          open={isOpen}
+          newName={newName}
+          setNewName={setNewName}
+          newURL={newURL}
+          setNewURL={setNewURL}
+          onClose={setIsOpen}
+          handleSubmit={addNewLink}
+        />
+      )}
       <Paper elevation={3} sx={{ p: 3 }}>
         <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
           <Grid
@@ -84,9 +135,16 @@ export const ProjectDetailsPage = () => {
         </Box>
 
         <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-            Links
-          </Typography>
+          <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
+            {" "}
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              Links
+            </Typography>{" "}
+            <Button onClick={() => setIsOpen(true)}>
+              <Add color="primary" />
+            </Button>
+          </Box>
+
           {projectDetails.links && projectDetails.links.length > 0 ? (
             <List dense sx={{ paddingTop: "1px" }}>
               {projectDetails.links.map((link: Link, index: number) => (
@@ -181,9 +239,7 @@ export const ProjectDetailsPage = () => {
                     </Typography>
                   </Box>
                   <Box width={"50%"}>
-                    <Typography variant="subtitle1" >
-                      {field.value}
-                    </Typography>
+                    <Typography variant="subtitle1">{field.value}</Typography>
                   </Box>
                 </Box>
               ))}
