@@ -1,0 +1,22 @@
+# Node.js modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/ # If you ever use pnpm
+
+# Production artifacts
+dist/
+build/
+.cache/
+
+# Editor/OS specific files
+.vscode/ # VS Code settings specific to your environment
+.idea/   # IntelliJ/WebStorm specific files
+.DS_Store # macOS specific
+Thumbs.db # Windows specific
+
+# Environment variables
+.env
+.env.local
+.env.*.local

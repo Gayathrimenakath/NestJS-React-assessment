@@ -13,8 +13,8 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import type { Link, ProjectDetails } from "../interfaces/project";
+import { AddAssets } from "./AddAssets";
 import { Media } from "./media";
-import { ModalWrapper } from "./ModalWrapper";
 
 export const ProjectDetailsPage = () => {
   const [projectDetails, setProjectDetails] = useState<ProjectDetails | null>(
@@ -23,8 +23,6 @@ export const ProjectDetailsPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [newName, setNewName] = useState<string>("");
-  const [newURL, setNewURL] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -47,39 +45,6 @@ export const ProjectDetailsPage = () => {
     }
   };
 
-  const addNewLink = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/projects/${projectDetails?.id}/newLink`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name: newName, url: newURL }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `HTTP error! status: ${response.status}`
-        );
-      }
-      const newLink = await response.json();
-      setProjectDetails((prevProject) => {
-        if (!prevProject) return null;
-        return {
-          ...prevProject,
-          links: [...prevProject.links, newLink],
-        };
-      });
-      setIsOpen(false);
-    } catch (error) {
-      setIsOpen(false);
-    }
-  };
-
   return error ? (
     <Box>Error Found: {error}</Box>
   ) : loading ? (
@@ -87,14 +52,11 @@ export const ProjectDetailsPage = () => {
   ) : projectDetails ? (
     <Container sx={{ mt: 0, mb: 1, width: "100%" }} disableGutters>
       {isOpen && (
-        <ModalWrapper
+        <AddAssets
           open={isOpen}
-          newName={newName}
-          setNewName={setNewName}
-          newURL={newURL}
-          setNewURL={setNewURL}
+          projectID={projectDetails?.id}
+          setProjectDetails={setProjectDetails}
           onClose={setIsOpen}
-          handleSubmit={addNewLink}
         />
       )}
       <Paper elevation={3} sx={{ p: 3 }}>
@@ -135,7 +97,13 @@ export const ProjectDetailsPage = () => {
         </Box>
 
         <Box sx={{ mt: 4 }}>
-          <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
+          <Box
+            display={"flex"}
+            width={"15%"}
+            flexDirection={"row"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
             {" "}
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
               Links
