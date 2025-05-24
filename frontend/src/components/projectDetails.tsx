@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import type { Link, ProjectDetails } from "../interfaces/project";
 import { AddAssets } from "./AddAssets";
 import { Media } from "./media";
+import { AddCustomField } from "./AddCustomField";
 
 export const ProjectDetailsPage = () => {
   const [projectDetails, setProjectDetails] = useState<ProjectDetails | null>(
@@ -24,6 +25,7 @@ export const ProjectDetailsPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenCustomField, setIsOpenCustomField] = useState<boolean>(false);
 
   useEffect(() => {
     fetchProjectDetails();
@@ -37,7 +39,6 @@ export const ProjectDetailsPage = () => {
       }
       const data: ProjectDetails = await response.json();
       setProjectDetails(data);
-      console.log(data);
       setLoading(false);
     } catch (error: any) {
       setError(error.message);
@@ -55,6 +56,14 @@ export const ProjectDetailsPage = () => {
               projectID={projectDetails.id}
               setProjectDetails={setProjectDetails}
               onClose={setIsOpen}
+            />
+          )}
+          {isOpenCustomField && (
+            <AddCustomField
+              open={isOpenCustomField}
+              projectID={projectDetails.id}
+              setProjectDetails={setProjectDetails}
+              onClose={setIsOpenCustomField}
             />
           )}
           <Paper elevation={3} sx={{ p: 3 }}>
@@ -183,9 +192,21 @@ export const ProjectDetailsPage = () => {
             </Box>
 
             <Box sx={{ mt: 4 }}>
-              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                Custom Fields
-              </Typography>
+              <Box
+                display={"flex"}
+                width={"25%"}
+                flexDirection={"row"}
+                alignItems={"center"}
+                justifyContent={"space-between"}
+              >
+                {" "}
+                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                  Custom Fields
+                </Typography>{" "}
+                <Button onClick={() => setIsOpenCustomField(true)}>
+                  <Add color="primary" />
+                </Button>
+              </Box>
 
               {projectDetails.customFields &&
               projectDetails.customFields.length > 0 ? (

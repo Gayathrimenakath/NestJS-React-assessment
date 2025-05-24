@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateCustomFieldDto } from './dto/create-custom-field.dto';
 import { CreateLinkDto } from './dto/create-link.dto';
 import {
+  CustomField,
   DocumentType,
   Link,
   PhotoType,
@@ -90,6 +92,10 @@ export class ProjectService {
 
   addNewLink(projectID: string, createLinkDto: CreateLinkDto): Link {
     const project = this.mockProjects.find((p) => p.id === projectID);
+    
+    if (!project) {
+      throw new Error(`Project with id ${projectID} not found`);
+    }
 
     const newLink: Link = {
       id: `${(project?.links?.length || 0) + 1}`,
@@ -98,5 +104,34 @@ export class ProjectService {
     };
     project?.links.push(newLink);
     return newLink;
+  }
+
+  addCustomField(
+    projectID: string,
+    createCustomFieldDto: CreateCustomFieldDto,
+  ): CustomField {
+    const project = this.mockProjects.find((p) => p.id === projectID);
+
+    if (!project) {
+      throw new Error(`Project with id ${projectID} not found`);
+    }
+    
+    // Check if the key already exists
+    const existingField = project?.customFields.find(
+      (field) => field.key === createCustomFieldDto.key,
+    );
+
+    if (existingField) {
+      throw new Error(
+        `CustomField with key '${createCustomFieldDto.key}' already exists`,
+      );
+    }
+
+    const customField: CustomField = {
+      key: createCustomFieldDto.key,
+      value: createCustomFieldDto.value,
+    };
+    project?.customFields.push(customField);
+    return customField;
   }
 }
