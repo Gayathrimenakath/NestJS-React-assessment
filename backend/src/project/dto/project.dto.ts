@@ -1,7 +1,14 @@
-export interface Link {
-  name: string;
-  url: string;
-}
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEnum,
+  IsNumber,
+  IsString,
+  IsUrl,
+  ValidateNested,
+} from 'class-validator';
+
+// Enums for media types
 export enum DocumentType {
   PDF = 'PDF',
   DOC = 'DOC',
@@ -18,43 +25,105 @@ export enum VideoType {
   MP4 = 'MP4',
 }
 
-export interface Document {
+// Base media class for shared fields
+class BaseMedia {
+  @IsString()
   id: string;
+
+  @IsString()
   name: string;
+
+  @IsUrl()
+  url: string;
+}
+
+// Document DTO
+export class Document extends BaseMedia {
+  @IsEnum(DocumentType)
   type: DocumentType;
-  url: string;
 }
 
-export interface Photo {
-  id: string;
-  name: string;
+// Photo DTO
+export class Photo extends BaseMedia {
+  @IsEnum(PhotoType)
   type: PhotoType;
-  url: string;
 }
 
-export interface Video {
-  id: string;
-  name: string;
+// Video DTO
+export class Video extends BaseMedia {
+  @IsNumber()
+  duration: number;
+
+  @IsEnum(VideoType)
   type: VideoType;
+}
+
+// Link DTO
+export class Link {
+  @IsString()
+  id: string;
+
+  @IsString()
+  name: string;
+
+  @IsUrl()
   url: string;
 }
 
-export interface CustomField {
+// CustomField DTO
+export class CustomField {
+  @IsString()
   key: string;
+
+  @IsString()
   value: string;
 }
 
-export interface ProjectDetails {
+// Main ProjectDetails DTO
+export class ProjectDetails {
+  @IsString()
   id: string;
+
+  @IsString()
   status: string;
+
+  @IsString()
   bookedDate: string;
+
+  @IsString()
   bookingId: string;
+
+  @IsString()
   customerRef: string;
+
+  @IsString()
   address: string;
+
+  @IsString()
   description: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Link)
   links: Link[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Document)
   documents: Document[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Photo)
   photos: Photo[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Video)
   videos: Video[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CustomField)
   customFields: CustomField[];
 }

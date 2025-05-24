@@ -1,8 +1,11 @@
-import { Article } from "@mui/icons-material";
+import { Article, Photo, PlayCircleFilledWhite } from "@mui/icons-material";
 import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
-import type { MediaType } from "../interfaces/project";
+import type { AssetType, MediaType } from "../interfaces/project";
 
-export const Media = (props: { mediaProp: MediaType }) => {
+export const Media = (props: {
+  mediaProp: MediaType;
+  assetType: AssetType;
+}) => {
   return (
     <Card sx={{ width: 180, mt: 1 }}>
       <CardMedia
@@ -14,7 +17,13 @@ export const Media = (props: { mediaProp: MediaType }) => {
             alignItems="center"
             justifyContent="center"
           >
-            <Article fontSize="large" />
+            {props.assetType === "Document" ? (
+              <Article fontSize="large" />
+            ) : props.assetType === "Photo" ? (
+              <Photo fontSize="large" />
+            ) : (
+              <PlayCircleFilledWhite fontSize="large" />
+            )}
           </Box>
         )}
       />

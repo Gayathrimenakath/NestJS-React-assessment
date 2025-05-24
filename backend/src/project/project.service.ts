@@ -21,8 +21,9 @@ export class ProjectService {
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor pretium pretium. Nulla at lectus eu mauris vulputate ullamcorper sed non libero. Cras vestibulum ornare tempus.',
       links: [
-        { name: 'pix4d', url: 'https://pix4d.com' },
+        { id: '1', name: 'pix4d', url: 'https://pix4d.com' },
         {
+          id: '2',
           name: 'matterport',
           url: 'https://my.matterport.com/show/?m=YdG9cgxNPGC',
         },
@@ -65,6 +66,7 @@ export class ProjectService {
         {
           id: 'video1',
           name: 'Walkthrough.mp4',
+          duration: 10.4,
           url: '/mock-videos/video1.mp4',
           type: VideoType.MP4,
         },
@@ -90,6 +92,7 @@ export class ProjectService {
     const project = this.mockProjects.find((p) => p.id === projectID);
 
     const newLink: Link = {
+      id: `${(project?.links?.length || 0) + 1}`,
       name: createLinkDto.name,
       url: createLinkDto.url,
     };

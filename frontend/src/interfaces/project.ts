@@ -1,33 +1,32 @@
 export interface Link {
+  id: string;
   name: string;
   url: string;
 }
 
-export type MediaType = Document | Photo | Video
-
+export type MediaType = Document | Photo | Video;
 export type DocumentType = "PDF" | "DOC" | "XSL" | "JPG";
 export type PhotoType = "PNG" | "JPG";
 export type VideoType = "MP4";
+export type AssetType = "Document" | "Photo" | "Video";
 
-export interface Document {
+interface BaseMedia {
   id: string;
   name: string;
+  url: string;
+}
+
+interface Document extends BaseMedia {
   type: DocumentType;
-  url: string;
 }
 
-export interface Photo {
-  id: string;
-  name: string;
+interface Photo extends BaseMedia {
   type: PhotoType;
-  url: string;
 }
 
-export interface Video {
-  id: string;
-  name: string;
+interface Video extends BaseMedia {
+  duration: number;
   type: VideoType;
-  url: string;
 }
 
 export interface CustomField {

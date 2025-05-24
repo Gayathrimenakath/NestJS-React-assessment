@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Modal,
@@ -19,6 +20,7 @@ export const AddAssets = (props: {
 }) => {
   const [newName, setNewName] = useState<string>("");
   const [newURL, setNewURL] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const addNewLink = async () => {
     try {
@@ -39,24 +41,25 @@ export const AddAssets = (props: {
           errorData.message || `HTTP error! status: ${response.status}`
         );
       }
+
       const newLink = await response.json();
-      props.setProjectDetails((prevProject: ProjectDetails | null) => {
-        if (!prevProject) return null;
-        return {
-          ...prevProject,
-          links: [...prevProject.links, newLink],
-        };
-      });
+
+      props.setProjectDetails((prev) =>
+        prev ? { ...prev, links: [...prev.links, newLink] } : prev
+      );
+
+      handleReset();
       props.onClose(false);
-    } catch (error) {
-      props.onClose(false);
+    } catch (error: any) {
+      setErrorMessage(error.message || "Something went wrong");
     }
   };
 
-  const handleSubmit = () => {
-    addNewLink();
-    props.onClose(false);
+  const handleReset = () => {
+    setNewName("");
+    setNewURL("");
   };
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -86,19 +89,38 @@ export const AddAssets = (props: {
               variant="outlined"
               size="small"
               value={newName}
-              onChange={(e) => setNewName(e.target.value)}
+              onChange={(e) => {
+                setErrorMessage("");
+                setNewName(e.target.value);
+              }}
             />
             <TextField
               label=" URL"
               variant="outlined"
               size="small"
               value={newURL}
-              onChange={(e) => setNewURL(e.target.value)}
+              onChange={(e) => {
+                setErrorMessage("");
+                setNewURL(e.target.value);
+              }}
             />
+            {errorMessage && (
+              <Alert
+                severity="error"
+                onClose={() => {
+                  handleReset();
+                  setErrorMessage("");
+                }}
+              >
+                {errorMessage}
+              </Alert>
+            )}
+
             <Box display={"flex"} justifyContent={"space-between"}>
               <Button
                 variant="contained"
-                onClick={() => handleSubmit()}
+                disabled={errorMessage !== "" || !newName || !newURL}
+                onClick={addNewLink}
                 sx={{ alignSelf: "flex-start" }}
               >
                 Add Link
