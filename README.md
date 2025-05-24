@@ -8,23 +8,24 @@ This project consists of a **NestJS backend** and a **React (Vite) frontend**.
 - `/frontend` - React app for UI, managing project details and assets.
 - Root directory contains scripts to run both servers concurrently.
 
-## API Endpoints
+### API Endpoints
+- GET /projects/:projectID — Get project details
 - POST /projects/:projectID/newLink — Add a new link
 - POST /projects/:projectID/newCustomField — Add a new custom field
 
-## Future Improvements
+### Future Improvements
 
 - Expand media handling to support file uploads.
 - Improve validation with custom error messages and inline hints.
 - Make Modal components resuable
 - Add test
 
-### Install the dependencies
+## Install the dependencies
 
 Install dependencies for both the frontend and backend:
 
 ```bash
-npm install-all
+npm run setup
 ```
 
 ### Run Both Servers Concurrently
